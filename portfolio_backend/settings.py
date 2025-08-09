@@ -45,7 +45,10 @@ INSTALLED_APPS = [
 ]
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # React app
+    "https://portfoliofrontend-tau.vercel.app/",
 ]
+
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MIDDLEWARE = [
