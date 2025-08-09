@@ -4,8 +4,14 @@ from .Serializers import *
 from rest_framework.decorators import action
 from rest_framework.response import Response
 class ProjectViewSet(viewsets.ModelViewSet):
-    queryset = Project.objects.all()
     serializer_class = ProjectSerializer
+
+    def get_queryset(self):
+        queryset = Project.objects.all()
+        category = self.request.query_params.get('category')
+        if category:
+            queryset = queryset.filter(category=category)
+        return queryset
 
 class CertificationViewSet(viewsets.ModelViewSet):
     queryset = Certification.objects.all()
