@@ -1,45 +1,57 @@
 from django.contrib import admin
-from .models import Project, ProjectImage, Certification, Message, Blog, Like, Comment, View, Resume
-from cloudinary.forms import CloudinaryFileField
 from django import forms
+from cloudinary.forms import CloudinaryFileField
+from .models import Project, ProjectImage, Certification, Message, Blog, Like, Comment, View, Resume
 
+
+# -------- Forms --------
 class ProjectAdminForm(forms.ModelForm):
+    image = CloudinaryFileField()
+
     class Meta:
         model = Project
         fields = '__all__'
-        widgets = {
-            'image': CloudinaryFileField(),
-        }
+
 
 class CertificationAdminForm(forms.ModelForm):
+    logo = CloudinaryFileField()
+
     class Meta:
         model = Certification
         fields = '__all__'
-        widgets = {
-            'logo': CloudinaryFileField(),
-        }
+
 
 class BlogAdminForm(forms.ModelForm):
+    cover_image = CloudinaryFileField()
+
     class Meta:
         model = Blog
         fields = '__all__'
-        widgets = {
-            'cover_image': CloudinaryFileField(),
-        }
 
-# Inline for additional project images
+
+class ProjectImageInlineForm(forms.ModelForm):
+    image = CloudinaryFileField()
+
+    class Meta:
+        model = ProjectImage
+        fields = '__all__'
+
+
+# -------- Inlines --------
 class ProjectImageInline(admin.TabularInline):
+    form = ProjectImageInlineForm
     model = ProjectImage
-    extra = 1  # How many empty fields to show by default
+    extra = 1  # Number of empty forms to display
 
 
+# -------- Admins --------
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
     form = ProjectAdminForm
     list_display = ('title', 'category', 'created_at')
     list_filter = ('category',)
     search_fields = ('title', 'description', 'tags')
-    inlines = [ProjectImageInline]  # Allows adding extra images inside Project edit page
+    inlines = [ProjectImageInline]
 
 
 @admin.register(Certification)
@@ -56,6 +68,7 @@ class BlogAdmin(admin.ModelAdmin):
     search_fields = ('title', 'description')
 
 
+# Register remaining models without custom admin
 admin.site.register(Message)
 admin.site.register(Like)
 admin.site.register(Comment)
