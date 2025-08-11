@@ -1,9 +1,17 @@
 from rest_framework import viewsets
-from .models import Project, Certification, Message,Blog
-from .Serializers import *
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
+
+from .models import (
+    Project, Certification, Message, Blog,
+    View, Like, Comment, Resume
+)
+from .serializers import (
+    ProjectSerializer, CertificationSerializer, MessageSerializer,
+    BlogSerializer, LikeSerializer, CommentSerializer, ResumeSerializer
+)
+
 
 class ProjectViewSet(viewsets.ModelViewSet):
     parser_classes = (MultiPartParser, FormParser)
@@ -11,10 +19,11 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = Project.objects.all()
-        category = self.request.query_params.get('category')
+        category = self.request.query_params.get("category")
         if category:
             queryset = queryset.filter(category=category)
         return queryset
+
 
 class CertificationViewSet(viewsets.ModelViewSet):
     parser_classes = (MultiPartParser, FormParser)
@@ -23,28 +32,36 @@ class CertificationViewSet(viewsets.ModelViewSet):
 
 
 class MessageViewSet(viewsets.ModelViewSet):
-    queryset = Message.objects.all().order_by('-created_at')
+    queryset = Message.objects.all().order_by("-created_at")
     serializer_class = MessageSerializer
+
 
 class BlogViewSet(viewsets.ModelViewSet):
     parser_classes = (MultiPartParser, FormParser)
-    queryset = Blog.objects.all().order_by('-published_at')
+    queryset = Blog.objects.all().order_by("-published_at")
     serializer_class = BlogSerializer
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=["post"])
     def view(self, request, pk=None):
         blog = self.get_object()
-        View.objects.create(blog=blog, ip_address=request.data.get('ip_address'))
-        return Response({'status': 'view counted'})
+        ip_address = request.data.get("ip_address")
+        if ip_address:
+            View.objects.create(blog=blog, ip_address=ip_address)
+            return Response({"status": "view counted"})
+        return Response({"error": "ip_address is required"}, status=400)
+
 
 class LikeViewSet(viewsets.ModelViewSet):
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
 
+
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
+
 class ResumeViewSet(viewsets.ModelViewSet):
-    queryset = Resume.objects.all().order_by('-uploaded_at')
+    queryset = Resume.objects.all().order_by("-uploaded_at")
     serializer_class = ResumeSerializer
+    parser_classes = (MultiPartParser, FormParser)
