@@ -1,7 +1,9 @@
 from pathlib import Path
 import os
 import dj_database_url
-from dotenv import load_dotenv  # 👈 add this
+from dotenv import load_dotenv
+load_dotenv()  # .env file load karega
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -84,13 +86,6 @@ WSGI_APPLICATION = 'portfolio_backend.wsgi.application'
 if os.environ.get('DATABASE_URL'):
     DATABASES = {
         'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
     }
 
 # Password validators
