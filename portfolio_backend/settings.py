@@ -6,45 +6,43 @@ import cloudinary.uploader
 import cloudinary.api
 from dotenv import load_dotenv
 
-load_dotenv()  # Loads .env locally; in Render env vars are automatic
+# Load local .env (not needed on Render)
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# SECRET KEY
 SECRET_KEY = os.environ.get(
     "DJANGO_SECRET_KEY",
-    "django-insecure--#8km&ldq82pf5%^6#35t$m@t*-1i*3@=2e)upby!3@&cx7rj$",
+    "django-insecure--#8km&ldq82pf5%^6#35t$m@t*-1i*3@&cx7rj$",
 )
 
-# DEBUG mode off by default, enable only in dev via env
+# Debug toggle
 DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 
+# Hosts
 ALLOWED_HOSTS = [
     "portfoliobackend-5mtm.onrender.com",
     "localhost",
     "127.0.0.1",
 ]
 
-# Application definition
+# Installed apps
 INSTALLED_APPS = [
-    # Django default apps
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
-    # Third party apps
     "rest_framework",
     "corsheaders",
     "cloudinary",
     "cloudinary_storage",
-
-    # Your apps
     "portfolio",
 ]
 
+# Middleware
 MIDDLEWARE = [
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "corsheaders.middleware.CorsMiddleware",
@@ -76,13 +74,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "portfolio_backend.wsgi.application"
 
-# Database configuration - using DATABASE_URL env var on Render
+# Database
 if os.environ.get("DATABASE_URL"):
     DATABASES = {
-        "default": dj_database_url.parse(os.environ.get("DATABASE_URL")),
+        "default": dj_database_url.parse(os.environ["DATABASE_URL"]),
     }
 else:
-    # fallback to sqlite locally if no DATABASE_URL
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -104,40 +101,46 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
+# Static files
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-
-# WhiteNoise config for static files serving
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-WHITENOISE_USE_FINDERS = True
-WHITENOISE_AUTOREFRESH = True
+
+# Cloudinary credentials check
+cloud_name = os.getenv("CLOUDINARY_CLOUD_NAME")
+api_key = os.getenv("CLOUDINARY_API_KEY")
+api_secret = os.getenv("CLOUDINARY_API_SECRET")
+
+if not all([cloud_name, api_key, api_secret]):
+    raise ValueError(
+        "Cloudinary credentials are missing! Please set CLOUDINARY_CLOUD_NAME, "
+        "CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET in environment variables."
+    )
 
 # Cloudinary configuration
 CLOUDINARY_STORAGE = {
-    "CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME"),
-    "API_KEY": os.getenv("CLOUDINARY_API_KEY"),
-    "API_SECRET": os.getenv("CLOUDINARY_API_SECRET"),
+    "CLOUD_NAME": cloud_name,
+    "API_KEY": api_key,
+    "API_SECRET": api_secret,
 }
 
-# Configure Cloudinary
 cloudinary.config(
-    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
-    api_key=os.getenv("CLOUDINARY_API_KEY"),
-    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
+    cloud_name=cloud_name,
+    api_key=api_key,
+    api_secret=api_secret,
     secure=True
 )
 
-# Media files settings - Use Cloudinary for media storage
+# Use Cloudinary for media
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"  # Fallback for local development
+MEDIA_ROOT = BASE_DIR / "media"  # Local fallback
 
-# CORS settings - adjust origins as per your frontend domains
+# CORS
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # React local dev server
-    "https://portfoliofrontend-tau.vercel.app",  # Your deployed frontend domain
+    "http://localhost:5173",
+    "https://portfoliofrontend-tau.vercel.app",
 ]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
