@@ -4,10 +4,10 @@ from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
 
 from .models import (
-    Project, Certification, Message, Blog,
-    View, Like, Comment, Resume
+    Project, ProjectImage, Certification, Message,
+    Blog, View, Like, Comment, Resume
 )
-from .serializers import (
+from .Serializers import (
     ProjectSerializer, CertificationSerializer, MessageSerializer,
     BlogSerializer, LikeSerializer, CommentSerializer, ResumeSerializer
 )
