@@ -1,4 +1,5 @@
 from django.db import models
+from cloudinary.models import CloudinaryField
 
 class Project(models.Model):
     CATEGORY_CHOICES = [
@@ -8,7 +9,7 @@ class Project(models.Model):
     ]
     title = models.CharField(max_length=200)
     description = models.TextField()
-    image = models.ImageField(upload_to='projects/')  # Main Image
+    image = CloudinaryField('image', folder='projects/')  # Main Image stored in Cloudinary
     tags = models.CharField(max_length=200)
     github_link = models.URLField(blank=True, null=True)
     live_link = models.URLField(blank=True, null=True)
@@ -21,7 +22,7 @@ class Project(models.Model):
 
 class ProjectImage(models.Model):
     project = models.ForeignKey(Project, related_name='additional_images', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='projects/additional/')
+    image = CloudinaryField('image', folder='projects/additional/')
 
     def __str__(self):
         return f"Image for {self.project.title}"
@@ -31,7 +32,7 @@ class Certification(models.Model):
     title = models.CharField(max_length=200)
     organization = models.CharField(max_length=200)
     date = models.DateField()
-    logo = models.ImageField(upload_to='certifications/')
+    logo = CloudinaryField('image', folder='certifications/')
     certificate_link = models.URLField()
 
     def __str__(self):
@@ -60,7 +61,7 @@ class Resume(models.Model):
 class Blog(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
-    cover_image = models.ImageField(upload_to='blogs/')
+    cover_image = CloudinaryField('image', folder='blogs/')
     published_at = models.DateTimeField(auto_now_add=True)
     link = models.URLField(blank=True, null=True)
 

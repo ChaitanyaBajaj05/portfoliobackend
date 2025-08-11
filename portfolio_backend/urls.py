@@ -2,8 +2,6 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
-from django.views.static import serve
-import os
 from rest_framework.routers import DefaultRouter
 from portfolio.views import (
     ProjectViewSet,
@@ -29,11 +27,7 @@ urlpatterns = [
     path('api/', include(router.urls)),
 ]
 
-# Serve media files in both development and production
+# Only serve media files locally in development
+# In production, Cloudinary handles all media files
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-else:
-    # In production, serve media files through Django
-    urlpatterns += [
-        path('media/<path:path>', serve, {'document_root': settings.MEDIA_ROOT}),
-    ]

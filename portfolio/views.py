@@ -3,7 +3,10 @@ from .models import Project, Certification, Message,Blog
 from .Serializers import *
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser, FormParser
+
 class ProjectViewSet(viewsets.ModelViewSet):
+    parser_classes = (MultiPartParser, FormParser)
     serializer_class = ProjectSerializer
 
     def get_queryset(self):
@@ -14,6 +17,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
         return queryset
 
 class CertificationViewSet(viewsets.ModelViewSet):
+    parser_classes = (MultiPartParser, FormParser)
     queryset = Certification.objects.all()
     serializer_class = CertificationSerializer
 
@@ -23,6 +27,7 @@ class MessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
 
 class BlogViewSet(viewsets.ModelViewSet):
+    parser_classes = (MultiPartParser, FormParser)
     queryset = Blog.objects.all().order_by('-published_at')
     serializer_class = BlogSerializer
 

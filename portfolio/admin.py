@@ -1,5 +1,31 @@
 from django.contrib import admin
 from .models import Project, ProjectImage, Certification, Message, Blog, Like, Comment, View, Resume
+from cloudinary.forms import CloudinaryFileField
+from django import forms
+
+class ProjectAdminForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = '__all__'
+        widgets = {
+            'image': CloudinaryFileField(),
+        }
+
+class CertificationAdminForm(forms.ModelForm):
+    class Meta:
+        model = Certification
+        fields = '__all__'
+        widgets = {
+            'logo': CloudinaryFileField(),
+        }
+
+class BlogAdminForm(forms.ModelForm):
+    class Meta:
+        model = Blog
+        fields = '__all__'
+        widgets = {
+            'cover_image': CloudinaryFileField(),
+        }
 
 # Inline for additional project images
 class ProjectImageInline(admin.TabularInline):
@@ -9,6 +35,7 @@ class ProjectImageInline(admin.TabularInline):
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
+    form = ProjectAdminForm
     list_display = ('title', 'category', 'created_at')
     list_filter = ('category',)
     search_fields = ('title', 'description', 'tags')
@@ -17,12 +44,14 @@ class ProjectAdmin(admin.ModelAdmin):
 
 @admin.register(Certification)
 class CertificationAdmin(admin.ModelAdmin):
+    form = CertificationAdminForm
     list_display = ('title', 'organization', 'date')
     search_fields = ('title', 'organization')
 
 
 @admin.register(Blog)
 class BlogAdmin(admin.ModelAdmin):
+    form = BlogAdminForm
     list_display = ('title', 'published_at')
     search_fields = ('title', 'description')
 
