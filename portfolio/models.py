@@ -19,7 +19,6 @@ class Project(models.Model):
         return self.title
 
 
-# New model for additional images (used for Graphic Design)
 class ProjectImage(models.Model):
     project = models.ForeignKey(Project, related_name='additional_images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='projects/additional/')
