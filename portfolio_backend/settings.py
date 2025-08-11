@@ -1,7 +1,7 @@
 from pathlib import Path
 import os
 import dj_database_url
-
+from dotenv import load_dotenv  # 👈 add this
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
