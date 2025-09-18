@@ -6,13 +6,15 @@ class Project(models.Model):
         ('Python', 'Python Apps'),
         ('Full-Stack', 'Full-Stack Apps'),
         ('Graphic Design', 'Graphic Design'),
+        ('UI/UX', 'UI/UX Projects'),  # New category
     ]
     title = models.CharField(max_length=200)
     description = models.TextField()
-    image = CloudinaryField('image', folder='projects/')  # Main Image stored in Cloudinary
+    image = CloudinaryField('image', folder='projects/')  # Main Image
     tags = models.CharField(max_length=200)
     github_link = models.URLField(blank=True, null=True)
     live_link = models.URLField(blank=True, null=True)
+    figma_link = models.URLField(blank=True, null=True)  # New Figma field
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='Full-Stack')
     created_at = models.DateTimeField(auto_now_add=True)
 
