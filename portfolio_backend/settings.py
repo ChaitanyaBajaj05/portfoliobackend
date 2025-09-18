@@ -79,7 +79,11 @@ WSGI_APPLICATION = "portfolio_backend.wsgi.application"
 # Database configuration - using DATABASE_URL env var on Render
 if os.environ.get("DATABASE_URL"):
     DATABASES = {
-        "default": dj_database_url.parse(os.environ.get("DATABASE_URL")),
+        "default": dj_database_url.config(
+            default=os.environ.get("DATABASE_URL"),
+            conn_max_age=600,
+            ssl_require=True
+        ),
     }
 else:
     # fallback to sqlite locally if no DATABASE_URL
